@@ -4,12 +4,19 @@ import { Link } from 'react-router-dom'
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import { useStateValue } from './StateProvider';
+import { auth } from './firebase';
 
 function Header() {
 	// state - is a current data layer, if I distructure it I'll get `{basket=[]}`
-	const [{ basket }] = useStateValue();
+	const [{ basket, user }] = useStateValue();
 
-	// console.log(basket)
+	const login = () => {
+		if (user) {
+			auth.signOut();
+		}
+	}
+
+	console.log('header', user)
 
 	return (
 		<nav className="header">
@@ -23,10 +30,10 @@ function Header() {
 			</div>
 
 			<div className="header_nav">
-				<Link to="/login" className="header_link">
-					<div className="header_option">
-						<span className="header_optionLineOne">Hello vsmolii</span>
-						<span className="header_optionLineTwo">Sign in</span>
+				<Link to={ !user && "/login"} className="header_link">
+					<div onClick={login} className="header_option">
+						<span className="header_optionLineOne">Hello {user?.email}</span>
+						<span className="header_optionLineTwo">{user ? 'Sign Out' : 'Sign in'}</span>
 					</div>
 				</Link>
 
